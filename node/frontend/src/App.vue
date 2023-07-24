@@ -9,8 +9,8 @@
         alt="Vue logo"
       />
     </router-link>
-    <router-link class="navbar--link" to="/vehicles">Vehicles</router-link>
-    <router-link class="navbar--link" to="/users">Users</router-link>
+    <router-link to="/vehicles">Vehicles</router-link>
+    <router-link to="/users">Users</router-link>
   </div>
   <router-view></router-view>
 </template>
