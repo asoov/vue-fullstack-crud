@@ -75,7 +75,6 @@ export default {
   },
   methods: {
     async addNewVehicle(vehicleData: Vehicle) {
-      console.log(vehicleData);
       try {
         this.addVehicleLoading = true;
         const result = await fetch(
@@ -101,7 +100,6 @@ export default {
         };
         await this.getVehicles();
       } catch (error) {
-        console.log(error);
         this.addVehicleError = error;
         this.snackbar = {
           show: true,
@@ -120,7 +118,6 @@ export default {
           `${import.meta.env.VITE_API_ENDPOINT}/vehicles`
         );
         const data = await response.json();
-        console.log(data);
         this.vehicles = data;
       } catch (error) {
         console.error(error);

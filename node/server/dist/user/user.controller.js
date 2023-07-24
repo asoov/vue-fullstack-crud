@@ -19,7 +19,6 @@ let UserController = class UserController {
         this.userService = userService;
     }
     async getUsers() {
-        console.log("get");
         return this.userService.getAll();
     }
     async getUserById(id) {

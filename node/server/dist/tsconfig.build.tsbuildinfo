@@ -2326,7 +2326,7 @@
         "signature": "7bb88b909b4b9e127001936152ee8c7eaec585b4b3a9c7baefb0b181049f53e0"
       },
       "../src/user/user.controller.ts": {
-        "version": "b954721a7202845c07b1678b707c7da587a6450482736e4cfc52e4eb4e9c06c4",
+        "version": "8d30d4f94cfddb687b0d94971ef3a237c1b5a5a30fe818eed0fb9dbefbf0f8c4",
         "signature": "6c00aec7c8af47f8b536fd802abc6e5e41aa3efd6619cae99c1ca16459d329e8"
       },
       "../node_modules/builder-pattern/dist/src/builder.d.ts": {
@@ -2898,7 +2898,7 @@
         "signature": "441104b363d80fe57eb79a50d495e0b7e3ebeb45a5f0d1a4067d71ef75e8fbfa"
       },
       "../src/validators/isfuture.ts": {
-        "version": "4a18c37d4d52f7877c22ede95f3dadf5d78e4ec99aee204793934729184b656e",
+        "version": "f0b47f4f48ce8cc721bd63a5611d54662f595e8a5fed88d5f60b3ce74c665ba4",
         "signature": "cf5fe6a0e47b5ce7df4d7f087f9a3305110f2b9caafb664cfba25c288dc2f47e"
       },
       "../src/vehicle/vehicle.ts": {
@@ -16480,7 +16480,6 @@
       "../node_modules/@nestjs/serve-static/index.d.ts",
       "../src/user/user.ts",
       "../src/user/user.service.ts",
-      "../src/user/user.controller.ts",
       "../node_modules/builder-pattern/dist/src/builder.d.ts",
       "../node_modules/builder-pattern/dist/src/index.d.ts",
       "../src/user/user-test-data.service.ts",
@@ -16625,6 +16624,7 @@
       "../node_modules/class-validator/types/index.d.ts",
       "../src/vehicle/vehicle.ts",
       "../src/vehicle/vehicle.service.ts",
+      "../src/vehicle/vehicle.controller.ts",
       "../src/vehicle/vehicle-test-data.service.ts",
       "../src/vehicle/vehicle.module.ts",
       "../src/app.module.ts",
@@ -16672,8 +16672,8 @@
       "../node_modules/@types/uglify-js/index.d.ts",
       "../node_modules/@types/webpack-sources/index.d.ts",
       "../node_modules/@types/webpack/index.d.ts",
-      "../src/validators/isfuture.ts",
-      "../src/vehicle/vehicle.controller.ts"
+      "../src/user/user.controller.ts",
+      "../src/validators/isfuture.ts"
     ]
   },
   "version": "3.8.3"

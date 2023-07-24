@@ -85,7 +85,6 @@ export default {
   },
   methods: {
     save(): void {
-      console.log(this.valid);
       this.$emit("add-vehicle", this.formData);
     },
     close(): void {

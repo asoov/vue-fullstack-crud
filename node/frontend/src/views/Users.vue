@@ -96,7 +96,6 @@ export default {
     },
 
     async searchUsersByName(): void {
-      console.log("searchByName", this.searchInput);
       // As we are already fetching all users on page load, we COULD just filter the users array
       // However as we created a endpoint to look, we will use it here
       // This is also more realistic, as we would not fetch all users on page load in a real world scenario

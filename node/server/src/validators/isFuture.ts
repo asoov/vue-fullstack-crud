@@ -10,9 +10,6 @@ export class IsFutureConstraint implements ValidatorConstraintInterface {
   // Dates get stringified when sent over the wire, so we need to convert it back to a date
   // might need to be refined that date strings get converted to dates automatically before validation
   validate(value: string) {
-    console.log("value", value);
-    console.log(new Date(value).getTime() > Date.now());
-    console.log(Date.now());
     const dateFromValue = new Date(value);
     return dateFromValue.getTime() > Date.now();
   }

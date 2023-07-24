@@ -9,9 +9,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const class_validator_1 = require("class-validator");
 let IsFutureConstraint = class IsFutureConstraint {
     validate(value) {
-        console.log("value", value);
-        console.log(new Date(value).getTime() > Date.now());
-        console.log(Date.now());
         const dateFromValue = new Date(value);
         return dateFromValue.getTime() > Date.now();
     }
