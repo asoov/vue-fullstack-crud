@@ -2,8 +2,8 @@
   <v-btn @click="open = !open">
     + Add new vehicle
     <v-dialog v-model="open">
-      <v-card class="add-vehicle-overlay" :loading="loading">
-        <v-card-title>
+      <v-card class="add-vehicle-overlay p-8" :loading="loading">
+        <v-card-title class="px-8 pt-8">
           Add new Vehicle
         </v-card-title>
         <v-card-text>
@@ -95,8 +95,6 @@ export default {
 </script>
 <style lang="scss">
 .add-vehicle-overlay {
-  padding: 16px;
-
   &--button-container {
     padding: 0 8px;
     display: flex;

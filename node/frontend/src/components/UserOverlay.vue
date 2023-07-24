@@ -1,9 +1,9 @@
 <template>
-  <v-btn @click="open = !open" color="grey-lighten-1" variant="text"
+  <v-btn @click="open = !open" variant="text"
     >More...
     <v-dialog v-model="open">
       <v-card max-width="500">
-        <v-card-title>
+        <v-card-title class="px-5 pt-8">
           <span class="headline">{{ user.firstName }} {{ user.lastName }}</span>
         </v-card-title>
         <v-card-text>
