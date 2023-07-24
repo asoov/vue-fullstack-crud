@@ -338,5 +338,5 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/git,node,java,linux,macos,gradle,windows,eclipse,intellij+all
 
 .idea/
-node/.database.sqlite3
+node/server/.database.sqlite3
 node/dist/
