@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="open = !open" variant="text"
+  <v-btn @click="toggleOpen" variant="text"
     >More...
     <v-dialog v-model="open">
       <v-card max-width="500">
@@ -12,7 +12,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="open = false">Close</v-btn>
+          <v-btn text @click="close">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -20,26 +20,40 @@
 </template>
 
 <script lang="ts">
-import { formatDate } from "../utils/formatDate";
-import type {User}  from "abi-node-backend/dist/user/user";
-import {Prop} from "vue";
+import { ref, computed, PropType } from "vue";
+import { formatDate } from "@/utils/formatDate";
+import type { User } from "fullstack-crud-node-backend/dist/user/user";
+
+
 export default {
   name: "UserOverlay",
   props: {
     user: {
-      type: Object as Prop<User>,
+      type: Object as PropType<User>,
       required: true
     }
   },
-  data(): { open: boolean } {
-    return {
-      open: false
+  setup(props) {
+    const open = ref(false);
+
+    const formattedBirthDate = computed(() => {
+      return formatDate(props.user.birthday);
+    });
+
+    const toggleOpen = () => {
+      open.value = !open.value;
     };
-  },
-  computed: {
-    formattedBirthDate(): string {
-      return formatDate(this.user.birthday);
-    }
+
+    const close = () => {
+      open.value = false;
+    };
+
+    return {
+      open,
+      formattedBirthDate,
+      toggleOpen,
+      close
+    };
   }
 };
 </script>

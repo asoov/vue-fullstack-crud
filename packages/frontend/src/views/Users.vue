@@ -4,33 +4,19 @@
     <p v-else-if="getUsersError">{{ getUsersError.message }}</p>
     <div class="users" v-else>
       <div class="users--search">
-        <v-form
-          class="users--search__container"
-          @submit.prevent="searchUsersByName"
-        >
-          <v-text-field
-            color="surface"
-            clearable
-            @click:clear="clearInput"
-            v-model="searchInput"
-          >
+        <v-form class="users--search__container" @submit.prevent="searchUsersByName">
+          <v-text-field color="surface" clearable @click:clear="clearInput" v-model="searchInput">
             <template #label>
               Search user by last name
             </template>
           </v-text-field>
-          <v-btn class="users--search__button" type="submit" rounded="xl"
-            >Search</v-btn
-          >
+          <v-btn class="users--search__button" type="submit" rounded="xl">Search</v-btn>
         </v-form>
       </div>
       <div class="users--list">
         <v-list lines="two">
-          <v-list-item
-            v-for="user in usersDisplayed"
-            :key="user.id"
-            :title="`${user.firstName} ${user.lastName}`"
-            prepend-avatar="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
-          >
+          <v-list-item v-for="user in usersDisplayed" :key="user.id" :title="`${user.firstName} ${user.lastName}`"
+            prepend-avatar="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541">
             <v-list-item-subtitle>
               <p>{{ user.email }}</p>
               <p>{{ formatBirthDate(user.birthday) }}</p>
@@ -46,90 +32,81 @@
 </template>
 
 <script lang="ts">
-import UserOverlay from "../components/UserOverlay.vue";
-import { formatDate } from "../utils/formatDate";
-// used yarn link to link abi-node-backend to frontend for type usage
-import { User } from "abi-node-backend/dist/user/user";
+import { ref, onMounted, watch } from 'vue';
+import UserOverlay from "@/components/UserOverlay.vue";
+import { formatDate } from "@/utils/formatDate";
+import type { User } from "fullstack-crud-node-backend/dist/user/user";
 
 export default {
   name: "Users",
   components: { UserOverlay },
-  data(): {
-    searchInput: string;
-    searchUsersLoading: boolean;
-    searchUsersError: Error | null;
-    getUsersLoading: boolean;
-    getUsersError: Error | null;
-    allUsers: User[];
-    usersDisplayed: User[];
-  } {
-    return {
-      searchInput: "",
-      getUsersLoading: false,
-      getUsersError: null,
-      searchUsersLoading: false,
-      searchUsersError: null,
-      allUsers: [],
-      usersDisplayed: []
-    };
-  },
+  setup() {
+    const searchInput = ref("");
+    const getUsersLoading = ref(false);
+    const getUsersError = ref<Error | null>(null);
+    const searchUsersLoading = ref(false);
+    const searchUsersError = ref<Error | null>(null);
+    const allUsers = ref<User[]>([]);
+    const usersDisplayed = ref<User[]>([]);
 
-  async created() {
-    await this.getAllUsers();
-  },
-
-  methods: {
-    async getAllUsers(): Promise<void> {
+    async function getAllUsers() {
       try {
-        this.getUsersLoading = true;
-        const response = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}/users`
-        );
+        getUsersLoading.value = true;
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/users`);
         const data = await response.json();
-        this.allUsers = data;
-        this.usersDisplayed = data;
+        allUsers.value = data;
+        usersDisplayed.value = data;
       } catch (error) {
-        this.getUsersError = error;
+        getUsersError.value = error;
       } finally {
-        this.getUsersLoading = false;
+        getUsersLoading.value = false;
       }
-    },
+    }
 
-    async searchUsersByName(): void {
-      // As we are already fetching all users on page load, we COULD just filter the users array
-      // However as we created a endpoint to look, we will use it here
-      // This is also more realistic, as we would not fetch all users on page load in a real world scenario
+    async function searchUsersByName() {
       try {
-        this.searchUsersLoading = true;
-        const response = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}/users/name/${this.searchInput}`
-        );
+        searchUsersLoading.value = true;
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/users/name/${searchInput.value}`);
         const data = await response.json();
-        this.usersDisplayed = data;
+        usersDisplayed.value = data;
       } catch (error) {
-        this.searchUsersError = error;
+        searchUsersError.value = error;
       } finally {
-        this.searchUsersLoading = false;
+        searchUsersLoading.value = false;
       }
-    },
+    }
 
-    formatBirthDate(date: Date): string {
+    function formatBirthDate(date: Date): string {
       return formatDate(date);
-    },
-    clearInput() {
-      this.searchInput = "";
-      this.usersDisplayed = this.allUsers;
     }
-  },
 
-  watch: {
-    searchInput(val: string) {
-      if (val === "") {
-        this.usersDisplayed = this.allUsers;
-      }
+    function clearInput() {
+      searchInput.value = "";
+      usersDisplayed.value = allUsers.value;
     }
+
+    watch(searchInput, (val) => {
+      if (val === "") {
+        usersDisplayed.value = allUsers.value;
+      }
+    });
+
+    onMounted(getAllUsers);
+
+    return {
+      searchInput,
+      getUsersLoading,
+      getUsersError,
+      searchUsersLoading,
+      searchUsersError,
+      allUsers,
+      usersDisplayed,
+      searchUsersByName,
+      formatBirthDate,
+      clearInput
+    };
   }
-};
+}
 </script>
 <style lang="scss">
 .users {

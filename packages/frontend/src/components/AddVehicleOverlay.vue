@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts">
-// used yarn link to link abi-node-backend to frontend for type usage
-import { Vehicle } from "abi-node-backend/dist/vehicle/vehicle";
-import { formatDateToYYYYMMDD } from "../utils/formatDate";
+import { ref, computed, SetupContext } from "vue";
+import { Vehicle } from "fullstack-crud-node-backend/dist/vehicle/vehicle";
+import { formatDateToYYYYMMDD } from "@/utils/formatDate";
 
 export default {
   name: "AddVehicleOverlay",
@@ -58,38 +58,43 @@ export default {
       default: false
     }
   },
-  data(): {
-    formData: Partial<Vehicle>;
-    valid: boolean;
-    validationRule: (value: string) => boolean | string;
-    open: boolean;
-  } {
-    return {
-      formData: {
-        model: "",
-        color: "",
-        licensePlate: "",
-        validTill: null,
-        vin: ""
-      },
-      valid: false,
-      validationRule: (value: string) => !!value || "Field is Required",
-      open: false
-    };
-  },
-  computed: {
-    minDate(): string {
+
+  setup(_, { emit }: SetupContext) {
+    const formData = ref<Partial<Vehicle>>({
+      model: "",
+      color: "",
+      licensePlate: "",
+      validTill: null,
+      vin: ""
+    });
+
+    const valid = ref(false);
+    const open = ref(false);
+
+    const validationRule = (value: string) => !!value || "Field is Required";
+
+    const minDate = computed(() => {
       const date = new Date();
       return formatDateToYYYYMMDD(date);
+    });
+
+    function save() {
+      emit("add-vehicle", formData.value);
     }
-  },
-  methods: {
-    save(): void {
-      this.$emit("add-vehicle", this.formData);
-    },
-    close(): void {
-      this.open = false;
+
+    function close() {
+      open.value = false;
     }
+
+    return {
+      formData,
+      valid,
+      open,
+      validationRule,
+      minDate,
+      save,
+      close
+    };
   }
 };
 </script>

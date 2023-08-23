@@ -35,103 +35,93 @@
     </div>
   </div>
 </template>
-
 <script lang="ts">
-import AddVehicleOverlay from "../components/AddVehicleOverlay.vue";
-
-// used yarn link to link abi-node-backend to frontend for type usage
-import { Vehicle } from "abi-node-backend/src/vehicle/vehicle";
-import { types } from "sass";
-import Error = types.Error;
-import Snackbar from "../components/Snackbar.vue";
+import { ref, reactive } from "vue";
+import Snackbar from "@/components/Snackbar.vue";
+import AddVehicleOverlay from "@/components/AddVehicleOverlay.vue";
+import type { Vehicle } from "fullstack-crud-node-backend/dist/vehicle/vehicle";
 
 export default {
   name: "Vehicles",
   components: { Snackbar, AddVehicleOverlay },
-  data(): {
-    getVehiclesLoading: boolean;
-    getVehiclesError: Error | null;
-    addVehicleLoading: boolean;
-    addVehicleError: Error | null;
-    vehicles: Vehicle[];
-    snackbar: {
-      show: boolean;
-      text: string;
-      type: string;
-    };
-  } {
-    return {
-      vehicles: [],
-      getVehiclesLoading: false,
-      getVehiclesError: null,
-      addVehicleLoading: false,
-      addVehicleError: null,
-      snackbar: {
-        show: false,
-        text: "",
-        type: "success"
-      }
-    };
-  },
-  methods: {
-    async addNewVehicle(vehicleData: Vehicle) {
+
+  setup() {
+    const getVehiclesLoading = ref(false);
+    const getVehiclesError = ref<Error | null>(null);
+    const addVehicleLoading = ref(false);
+    const addVehicleError = ref<Error | null>(null);
+    const vehicles = ref<Vehicle[]>([]);
+    const snackbar = reactive({
+      show: false,
+      text: "",
+      type: "success"
+    });
+
+    async function getVehicles() {
       try {
-        this.addVehicleLoading = true;
+        getVehiclesLoading.value = true;
+        const response = await fetch(
+            `${import.meta.env.VITE_API_ENDPOINT}/vehicles`
+        );
+        const data = await response.json();
+        vehicles.value = data;
+      } catch (error) {
+        getVehiclesError.value = error;
+      } finally {
+        getVehiclesLoading.value = false;
+      }
+    }
+
+    async function addNewVehicle(vehicleData: Vehicle) {
+      try {
+        addVehicleLoading.value = true;
         const result = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}/vehicles`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              ...vehicleData,
-              validTill: new Date(vehicleData.validTill)
-            })
-          }
+            `${import.meta.env.VITE_API_ENDPOINT}/vehicles`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                ...vehicleData,
+                validTill: new Date(vehicleData.validTill)
+              })
+            }
         );
         if (!result.ok) {
           throw new Error("Failed to add vehicle");
         }
-        this.snackbar = {
-          show: true,
-          text: "Vehicle Added Successfully",
-          type: "success"
-        };
-        await this.getVehicles();
+        snackbar.show = true;
+        snackbar.text = "Vehicle Added Successfully";
+        snackbar.type = "success";
+
+        await getVehicles();
       } catch (error) {
-        this.addVehicleError = error;
-        this.snackbar = {
-          show: true,
-          text: "Vehicle Added Failed",
-          type: "error"
-        };
-        console.error(error);
+        addVehicleError.value = error;
+        snackbar.show = true;
+        snackbar.text = "Vehicle Added Failed";
+        snackbar.type = "error";
       } finally {
-        this.addVehicleLoading = false;
-      }
-    },
-    async getVehicles() {
-      try {
-        this.getVehiclesLoading = true;
-        const response = await fetch(
-          `${import.meta.env.VITE_API_ENDPOINT}/vehicles`
-        );
-        const data = await response.json();
-        this.vehicles = data;
-      } catch (error) {
-        console.error(error);
-        this.getVehiclesError = error;
-      } finally {
-        this.getVehiclesLoading = false;
+        addVehicleLoading.value = false;
       }
     }
-  },
-  async created() {
-    await this.getVehicles();
+
+    // Fetch vehicles when component is created
+    getVehicles();
+
+    return {
+      getVehiclesLoading,
+      getVehiclesError,
+      addVehicleLoading,
+      addVehicleError,
+      vehicles,
+      snackbar,
+      addNewVehicle
+    };
   }
 };
 </script>
+
 <style lang="scss">
 .vehicles {
   &--wrapper {

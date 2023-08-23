@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default ({ mode }) => {
@@ -13,10 +14,7 @@ export default ({ mode }) => {
       }
     },
     resolve: {
-      alias: {
-        "@": "/src",
-        components: "/src/components"
-      }
+      alias: [{ find: "@", replacement: path.resolve(__dirname, "./src") }]
     },
     css: {
       preprocessorOptions: {
