@@ -1,78 +1,59 @@
 <template>
   <div>
-    <p v-if="getUsersLoading">Loading users....</p>
-    <p v-else-if="getUsersError">{{ getUsersError.message }}</p>
-    <div class="users" v-else>
+    <div class="users">
       <div class="users--search">
-        <v-form class="users--search__container" @submit.prevent="searchUsersByName">
-          <v-text-field color="surface" clearable @click:clear="clearInput" v-model="searchInput">
-            <template #label>
-              Search user by last name
-            </template>
-          </v-text-field>
-          <v-btn class="users--search__button" type="submit" rounded="xl">Search</v-btn>
-        </v-form>
+        <UsersSearch
+          @search="searchUsers"
+          @clear="clearInput"
+          data-test-id="users-search"
+        />
       </div>
-      <div class="users--list">
-        <v-list lines="two">
-          <v-list-item v-for="user in usersDisplayed" :key="user.id" :title="`${user.firstName} ${user.lastName}`"
-            prepend-avatar="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541">
-            <v-list-item-subtitle>
-              <p>{{ user.email }}</p>
-              <p>{{ formatBirthDate(user.birthday) }}</p>
-            </v-list-item-subtitle>
-            <template v-slot:append>
-              <UserOverlay :user="user" />
-            </template>
-          </v-list-item>
-        </v-list>
+      <p v-if="isLoading" data-test-id="users-loading">Loading users....</p>
+      <p v-else-if="error" data-test-id="users-error">{{ error.message }}</p>
+      <div v-else class="users--list">
+        <UsersList :users="usersDisplayed" data-test-id="users-list" />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import UserOverlay from "@/components/UserOverlay.vue";
+import { ref, onMounted } from 'vue';
 import { formatDate } from "@/utils/formatDate";
 import type { User } from "fullstack-crud-node-backend/dist/user/user";
+import UsersSearch from "@/components/Users/UsersSearch.vue";
+import UsersList from "@/components/Users/UsersList.vue";
+import {fetchAllUsers, fetchUsersByName} from "@/services/userService";
 
 export default {
   name: "Users",
-  components: { UserOverlay },
+  components: {UsersList, UsersSearch },
   setup() {
-    const searchInput = ref("");
-    const getUsersLoading = ref(false);
-    const getUsersError = ref<Error | null>(null);
-    const searchUsersLoading = ref(false);
-    const searchUsersError = ref<Error | null>(null);
+    const isLoading = ref(true);
+    const error = ref<Error | null>(null);
     const allUsers = ref<User[]>([]);
     const usersDisplayed = ref<User[]>([]);
 
     async function getAllUsers() {
       try {
-        getUsersLoading.value = true;
-        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/users`);
-        const data = await response.json();
-        allUsers.value = data;
-        usersDisplayed.value = data;
-      } catch (error) {
-        getUsersError.value = error;
+        isLoading.value = true;
+        allUsers.value = await fetchAllUsers();
+        usersDisplayed.value = allUsers.value;
+      } catch (err) {
+        error.value = err;
       } finally {
-        getUsersLoading.value = false;
+        isLoading.value = false;
       }
     }
 
-    async function searchUsersByName() {
+    async function searchUsers(searchInput: string) {
       try {
-        searchUsersLoading.value = true;
-        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/users/name/${searchInput.value}`);
-        const data = await response.json();
-        usersDisplayed.value = data;
-      } catch (error) {
-        searchUsersError.value = error;
+        isLoading.value = true;
+        usersDisplayed.value = await fetchUsersByName(searchInput);
+      } catch (err) {
+        error.value = err;
       } finally {
-        searchUsersLoading.value = false;
+        isLoading.value = false;
       }
     }
 
@@ -81,27 +62,17 @@ export default {
     }
 
     function clearInput() {
-      searchInput.value = "";
       usersDisplayed.value = allUsers.value;
     }
-
-    watch(searchInput, (val) => {
-      if (val === "") {
-        usersDisplayed.value = allUsers.value;
-      }
-    });
 
     onMounted(getAllUsers);
 
     return {
-      searchInput,
-      getUsersLoading,
-      getUsersError,
-      searchUsersLoading,
-      searchUsersError,
+      isLoading,
+      error,
       allUsers,
       usersDisplayed,
-      searchUsersByName,
+      searchUsers,
       formatBirthDate,
       clearInput
     };

@@ -14,37 +14,22 @@
         :text="snackbar.text"
         @close="snackbar.show = false"
       />
-      <div class="vehicles--cards-container">
-        <v-card v-for="vehicle in vehicles">
-          <template #title>
-            <div class="vehicles--title">
-              {{ vehicle.model }}
-              <div
-                class="vehicles--color-dot"
-                :style="{ background: vehicle.color }"
-              />
-            </div>
-          </template>
-          <template #subtitle>{{ vehicle.color }}</template>
-          <template #text
-            >{{ vehicle.licensePlate }} |
-            {{ new Date(vehicle.validTill).toDateString() }}</template
-          >
-        </v-card>
-      </div>
+      <VehiclesCardsList :vehicles="vehicles" />
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import { ref, reactive } from "vue";
+import { fetchVehicles, addVehicle } from "@/services/vehicleService";
 import Snackbar from "@/components/Snackbar.vue";
 import AddVehicleOverlay from "@/components/AddVehicleOverlay.vue";
 import type { Vehicle } from "fullstack-crud-node-backend/dist/vehicle/vehicle";
+import VehiclesCardsList from "@/components/Vehicles/VehiclesCardsList.vue";
 
 export default {
   name: "Vehicles",
-  components: { Snackbar, AddVehicleOverlay },
-
+  components: {VehiclesCardsList, Snackbar, AddVehicleOverlay },
   setup() {
     const getVehiclesLoading = ref(false);
     const getVehiclesError = ref<Error | null>(null);
@@ -57,14 +42,10 @@ export default {
       type: "success"
     });
 
-    async function getVehicles() {
+    async function loadVehicles() {
       try {
         getVehiclesLoading.value = true;
-        const response = await fetch(
-            `${import.meta.env.VITE_API_ENDPOINT}/vehicles`
-        );
-        const data = await response.json();
-        vehicles.value = data;
+        vehicles.value = await fetchVehicles();
       } catch (error) {
         getVehiclesError.value = error;
       } finally {
@@ -75,39 +56,22 @@ export default {
     async function addNewVehicle(vehicleData: Vehicle) {
       try {
         addVehicleLoading.value = true;
-        const result = await fetch(
-            `${import.meta.env.VITE_API_ENDPOINT}/vehicles`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                ...vehicleData,
-                validTill: new Date(vehicleData.validTill)
-              })
-            }
-        );
-        if (!result.ok) {
-          throw new Error("Failed to add vehicle");
-        }
+        await addVehicle(vehicleData);
+        vehicles.value = [...vehicles.value, vehicleData];
         snackbar.show = true;
         snackbar.text = "Vehicle Added Successfully";
         snackbar.type = "success";
-
-        await getVehicles();
       } catch (error) {
         addVehicleError.value = error;
         snackbar.show = true;
-        snackbar.text = "Vehicle Added Failed";
+        snackbar.text = error.message || "Vehicle Add Failed";
         snackbar.type = "error";
       } finally {
         addVehicleLoading.value = false;
       }
     }
 
-    // Fetch vehicles when component is created
-    getVehicles();
+    loadVehicles();
 
     return {
       getVehiclesLoading,
@@ -135,18 +99,6 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-  }
-
-  &--title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  &--color-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
   }
 }
 </style>

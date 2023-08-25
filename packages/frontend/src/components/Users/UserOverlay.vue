@@ -1,8 +1,8 @@
 <template>
-  <v-btn @click="toggleOpen" variant="text"
-    >More...
+  <v-btn @click="toggleOpen" data-test-id="user-overlay-button" variant="text">
+    More...
     <v-dialog v-model="open">
-      <v-card max-width="500">
+      <v-card max-width="500" data-test-id="user-overlay-dialog-content">
         <v-card-title class="px-5 pt-8">
           <span class="headline">{{ user.firstName }} {{ user.lastName }}</span>
         </v-card-title>
@@ -12,7 +12,12 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="close">Close</v-btn>
+          <v-btn
+            text
+            @click="close"
+            data-test-id="user-overlay-dialog-close-button"
+            >Close</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -33,7 +38,7 @@ export default {
       required: true
     }
   },
-  setup(props) {
+  setup(props: { user: User }) {
     const open = ref(false);
 
     const formattedBirthDate = computed(() => {

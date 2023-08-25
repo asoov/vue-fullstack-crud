@@ -19,7 +19,7 @@ const audiColors = {
   audiDarkRed: "#AA142D"
 };
 
-const audiTheme: ThemeDefinition = {
+export const audiTheme: ThemeDefinition = {
   dark: false,
   colors: {
     surface: audiColors.grayLighter,

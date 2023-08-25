@@ -13,6 +13,7 @@
   },
   "scripts": {
     "server:start:dev": "yarn --cwd packages/server start:dev",
-    "client:start:dev": "yarn --cwd packages/frontend dev"
+    "client:start:dev": "yarn --cwd packages/frontend dev",
+    "client:test": "yarn --cwd packages/frontend test"
   }
 }
