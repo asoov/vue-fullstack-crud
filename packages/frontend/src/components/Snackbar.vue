@@ -2,7 +2,7 @@
   <v-snackbar :color="type">
     <div class="snackbar">
       {{ text }}
-      <v-btn text color="white" @click="$emit('close')">Close</v-btn>
+      <v-btn text="Close" color="white" @click="$emit('close')">Close</v-btn>
     </div>
   </v-snackbar>
 </template>

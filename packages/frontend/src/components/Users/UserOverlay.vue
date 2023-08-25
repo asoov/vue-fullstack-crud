@@ -13,7 +13,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            text
+            text="Close"
             @click="close"
             data-test-id="user-overlay-dialog-close-button"
             >Close</v-btn
@@ -27,8 +27,7 @@
 <script lang="ts">
 import { ref, computed, PropType } from "vue";
 import { formatDate } from "@/utils/formatDate";
-import type { User } from "fullstack-crud-node-backend/dist/user/user";
-
+import { User } from "fullstack-crud-node-backend/dist/user/user";
 
 export default {
   name: "UserOverlay",

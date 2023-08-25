@@ -8,35 +8,16 @@
         </v-card-title>
         <v-card-text>
           <v-form v-model="valid">
-            <v-text-field
-              v-model="formData.model"
-              :rules="[validationRule]"
-              label="Model"
-            />
-            <v-text-field
-              v-model="formData.color"
-              :rules="[validationRule]"
-              label="Color"
-            />
-            <v-text-field
-              v-model="formData.licensePlate"
-              :rules="[validationRule]"
-              label="License Plate"
-            />
+            <v-text-field v-model="formData.model" :rules="[validationRule]" label="Model" />
+            <v-text-field v-model="formData.color" :rules="[validationRule]" label="Color" />
+            <v-text-field v-model="formData.licensePlate" :rules="[validationRule]" label="License Plate" />
             <v-text-field v-model="formData.vin" label="VIN" />
-            <v-text-field
-              type="date"
-              :rules="[validationRule]"
-              :min="minDate"
-              v-model="formData.validTill"
-              label="Valid Till"
-            />
+            <v-text-field type="date" :rules="[validationRule]" :min="minDate" v-model="formData.validTill"
+              label="Valid Till" />
             <v-spacer />
             <v-card-actions cols="12">
-              <v-btn color="primary" :disabled="!valid" text @click="save"
-                >Save</v-btn
-              >
-              <v-btn text @click="close">Cancel</v-btn>
+              <v-btn color="primary" :disabled="!valid" text="Save" @click="save">Save</v-btn>
+              <v-btn text="Cancel" @click="close">Cancel</v-btn>
             </v-card-actions>
           </v-form>
         </v-card-text>
@@ -64,7 +45,7 @@ export default {
       model: "",
       color: "",
       licensePlate: "",
-      validTill: null,
+      validTill: undefined,
       vin: ""
     });
 

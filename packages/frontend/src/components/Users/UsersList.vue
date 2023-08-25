@@ -20,12 +20,14 @@
 <script lang="ts">
 import UserOverlay from "@/components/Users/UserOverlay.vue";
 import { formatDate } from "@/utils/formatDate";
+import { PropType } from "vue";
+import { User } from "fullstack-crud-node-backend/dist/user/user";
 
 export default {
   name: "UsersList",
   components: { UserOverlay },
   props: {
-    users: Array
+    users: Array as PropType<User[]>
   },
   methods: {
     formatBirthDate(date: Date): string {

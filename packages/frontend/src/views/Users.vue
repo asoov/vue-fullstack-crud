@@ -40,7 +40,7 @@ export default {
         allUsers.value = await fetchAllUsers();
         usersDisplayed.value = allUsers.value;
       } catch (err) {
-        error.value = err;
+        error.value = err as Error;
       } finally {
         isLoading.value = false;
       }
@@ -51,7 +51,7 @@ export default {
         isLoading.value = true;
         usersDisplayed.value = await fetchUsersByName(searchInput);
       } catch (err) {
-        error.value = err;
+        error.value = err as Error;
       } finally {
         isLoading.value = false;
       }

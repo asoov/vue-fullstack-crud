@@ -47,7 +47,7 @@ export default {
         getVehiclesLoading.value = true;
         vehicles.value = await fetchVehicles();
       } catch (error) {
-        getVehiclesError.value = error;
+        getVehiclesError.value = error as Error;
       } finally {
         getVehiclesLoading.value = false;
       }
@@ -62,9 +62,9 @@ export default {
         snackbar.text = "Vehicle Added Successfully";
         snackbar.type = "success";
       } catch (error) {
-        addVehicleError.value = error;
+        addVehicleError.value = error as Error;
         snackbar.show = true;
-        snackbar.text = error.message || "Vehicle Add Failed";
+        snackbar.text = (error as Error).message || "Vehicle Add Failed";
         snackbar.type = "error";
       } finally {
         addVehicleLoading.value = false;

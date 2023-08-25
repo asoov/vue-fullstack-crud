@@ -1,7 +1,7 @@
 import {
-  BaseWrapper,
+  ComponentMountingOptions,
+  DOMWrapper,
   mount,
-  MountingOptions,
   VueWrapper
 } from "@vue/test-utils";
 import { createVuetify } from "vuetify";
@@ -9,8 +9,7 @@ import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { audiTheme } from "@/main";
 import router from "@/router";
-import { WrapperType } from "@vue/test-utils/dist/wrapperFactory";
-import { VueElement } from "vue";
+import { DefineComponent, VueElement } from "vue";
 
 const vuetify = createVuetify({
   components,
@@ -25,7 +24,7 @@ const vuetify = createVuetify({
 
 export const mountWithPlugins = (
   component: VueElement,
-  options?: MountingOptions<any>
+  options?: ComponentMountingOptions<DefineComponent>
 ) => {
   return mount(component, {
     global: {
@@ -46,13 +45,13 @@ export const findByTestId = (
   wrapper: VueWrapper<any>,
   testId: string,
   multiple = false
-): VueWrapper => {
+): DOMWrapper<any> | DOMWrapper<any>[] => {
   if (multiple) {
     return wrapper.findAll(testIdQueryString(testId));
   }
   return wrapper.find(testIdQueryString(testId));
 };
 
-export const testIdQueryString = (testId: string): VueWrapper => {
+export const testIdQueryString = (testId: string): string => {
   return `[data-test-id="${testId}"]`;
 };

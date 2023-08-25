@@ -35,7 +35,7 @@ export default {
   name: "VehiclesCardsList",
   props: {
     vehicles: {
-      type: Array as PropType<Vehicle>,
+      type: Array as PropType<Vehicle[]>,
       required: true
     }
   }
